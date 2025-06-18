@@ -8,6 +8,12 @@ class FeedbackSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'content', 'created_at']
         read_only_fields = ['id', 'created_at']
 
+class AdminFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['id', 'title', 'content', 'is_reviewed', 'created_at', 'reviewed_at']
+        read_only_fields = ['id', 'created_at', 'reviewed_at']
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -20,7 +26,7 @@ class LoginSerializer(serializers.Serializer):
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
-                    if user.is_staff:
+                    if user.is_staff:  # Only allow staff/admin users
                         data['user'] = user
                         return data
                     else:
