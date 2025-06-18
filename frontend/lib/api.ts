@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Feedback, ApiResponse } from "@/types";
+import { Feedback, LoginData, AuthResponse, ApiResponse } from "@/types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -41,6 +41,40 @@ export const feedbackApi = {
     content: string;
   }): Promise<Feedback> => {
     const response = await api.post("/feedback/", feedback);
+    return response.data;
+  },
+};
+
+export const authApi = {
+  login: async (
+    credentials: LoginData
+  ): Promise<{ message: string; user: any }> => {
+    const response = await api.post("/login/", credentials);
+    return response.data;
+  },
+
+  logout: async (): Promise<{ message: string }> => {
+    const response = await api.post("/logout/");
+    return response.data;
+  },
+
+  checkAuth: async (): Promise<AuthResponse> => {
+    const response = await api.get("/auth/check/");
+    return response.data;
+  },
+};
+
+export const adminApi = {
+  getAllFeedback: async (): Promise<ApiResponse<Feedback>> => {
+    const response = await api.get("/admin/feedback/");
+    return response.data;
+  },
+
+  updateFeedback: async (
+    id: number,
+    data: { is_reviewed: boolean }
+  ): Promise<Feedback> => {
+    const response = await api.patch(`/admin/feedback/${id}/`, data);
     return response.data;
   },
 };
