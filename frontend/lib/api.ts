@@ -1,5 +1,5 @@
-// lib/api.ts
 import axios from "axios";
+import { Feedback, ApiResponse } from "@/types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -29,5 +29,20 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+export const feedbackApi = {
+  getPublicFeedback: async (): Promise<ApiResponse<Feedback>> => {
+    const response = await api.get("/feedback/");
+    return response.data;
+  },
+
+  submitFeedback: async (feedback: {
+    title: string;
+    content: string;
+  }): Promise<Feedback> => {
+    const response = await api.post("/feedback/", feedback);
+    return response.data;
+  },
+};
 
 export default api;
